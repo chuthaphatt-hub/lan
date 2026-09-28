@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>แผนที่อัตลักษณ์ล้านนา | เชียงใหม่</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIINfQWnDfYdM6T6TQfGZ5Kc3gEQH2bS5J0=" crossorigin="">
+  <style>
+    :root {
+      --red: #8e2b20;
+      --gold: #d6a23a;
+      --jade: #23765f;
+      --ink: #2d2622;
+      --paper: #fbf4e7;
+      --line: #e6d5b6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font: 15px/1.45 system-ui, -apple-system, "Noto Sans Thai", sans-serif;
+      background: var(--paper);
+    }
+
+    .app {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+    }
+
+    aside {
+      z-index: 1000;
+      padding: 22px;
+      background: linear-gradient(165deg, #fffaf0, var(--paper));
+      border-right: 4px solid var(--gold);
+      overflow: auto;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      color: var(--red);
+      font-size: 1.38rem;
+      line-height: 1.25;
+    }
+
+    .sub {
+      margin: 0 0 19px;
+      color: #66584c;
+      font-size: .9rem;
+    }
+
+    .panel {
+      padding: 15px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .panel h2 {
+      margin: 0 0 10px;
+      color: var(--red);
+      font-size: 1rem;
+    }
+
+    label,
+    .layer-row {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      margin: 8px 0;
+      cursor: pointer;
+    }
+
+    input {
+      accent-color: var(--jade);
+    }
+
+    input[type=range] {
+      width: 100%;
+    }
+
+    .range-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .9rem;
+    }
+
+    .count {
+      color: var(--jade);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .legend {
+      display: grid;
+      gap: 7px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1px #8a7661;
+    }
+
+    #map {
+      min-height: 100dvh;
+      width: 100%;
+    }
+
+    .map-title {
+      font-weight: 700;
+      color: var(--red);
+    }
+
+    .popup-image {
+      display: block;
+      width: 100%;
+      max-height: 135px;
+      object-fit: cover;
+      margin: 8px 0;
+      border-radius: 4px;
+    }
+
+    .popup-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+    }
+
+    .popup-table td {
+      padding: 3px 0;
+      border-bottom: 1px solid #eee3d1;
+    }
+
+    .popup-table td:first-child {
+      color: #756354;
+      padding-right: 12px;
+    }
+
+    .notice {
+      margin: 12px 0 0;
+      padding: 9px;
+      border-left: 4px solid var(--gold);
+      background: #fff3cf;
+      color: #604a22;
+      font-size: .82rem;
+    }
+
+    .mobile-toggle {
+      display: none;
+    }
+
+    .leaflet-control-layers {
+      border-radius: 4px;
+    }
+
+    .hot {
+      color: #b72720;
+      font-weight: 700;
+    }
+
+    .cold {
+      color: #2879a1;
+      font-weight: 700;
+    }
+
+    @media (max-width:760px) {
+      .app {
+        display: block;
+      }
+
+      aside {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: min(330px, 88vw);
+        transform: translateX(-102%);
+        transition: transform .22s ease;
+        box-shadow: 4px 0 18px #3d291c55;
+      }
+
+      body.sidebar-open aside {
+        transform: translateX(0);
+      }
+
+      #map {
+        min-height: 100dvh;
+      }
+
+      .mobile-toggle {
+        display: block;
+        position: fixed;
+        z-index: 1100;
+        top: 12px;
+        left: 12px;
+        padding: 10px 12px;
+        border: 0;
+        border-radius: 4px;
+        color: #fff;
+        background: var(--red);
+        font: inherit;
+        box-shadow: 0 2px 7px #0004;
+      }
+
+      body.sidebar-open .mobile-toggle {
+        left: min(276px, calc(88vw - 54px));
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <button class="mobile-toggle" id="sidebarToggle" type="button" aria-controls="sidebar" aria-expanded="false">☰
+    ตัวกรอง</button>
+  <main class="app">
+    <aside id="sidebar">
+      <h1>อัตลักษณ์ความเป็นล้านนา</h1>
+      <p class="sub">การวิเคราะห์รูปแบบการกระจายตัวเชิงพื้นที่ในเมืองเชียงใหม่</p>
+      <section class="panel">
+        <h2>ชั้นข้อมูล</h2>
+        <label class="layer-row"><input id="pointsToggle" type="checkbox" checked> จุดอัตลักษณ์</label>
+        <label class="layer-row"><input id="heatToggle" type="checkbox"> Heatmap ความเชื่อมั่น</label>
+        <label class="layer-row"><input id="hotspotToggle" type="checkbox" checked> Hot Spot / Cold Spot</label>
+        <label class="layer-row"><input id="boundaryToggle" type="checkbox" checked> ขอบเขตพื้นที่ศึกษา</label>
+      </section>
+      <section class="panel">
+        <h2>กรองประเภทอัตลักษณ์</h2>
+        <div id="categoryFilters"></div>
+      </section>
+      <section class="panel">
+        <h2>ค่าความเชื่อมั่นขั้นต่ำ</h2>
+        <div class="range-label"><span>Confidence score</span><strong id="confidenceValue">0.00</strong></div>
+        <input id="confidenceSlider" type="range" min="0" max="1" step="0.01" value="0">
+        <p>แสดงผล <span id="pointCount" class="count" aria-live="polite">0</span> จุด</p>
+      </section>
+      <section class="panel">
+        <h2>คำอธิบายสัญลักษณ์</h2>
+        <div class="legend" id="legend"></div>
+        <div class="legend-item"><span class="swatch" style="background:#c43b31"></span><span>Hot Spot (z-score
+            บวก)</span></div>
+        <div class="legend-item"><span class="swatch" style="background:#4c9ac2"></span><span>Cold Spot (z-score
+            ลบ)</span></div>
+      </section>
+      <p class="notice" id="dataNotice"></p>
+    </aside>
+    <div id="map" aria-label="แผนที่อัตลักษณ์ล้านนาในเมืองเชียงใหม่"></div>
+  </main>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+  <script>
+    /* ============================== CONFIG ================================
+       วิธีใช้ข้อมูลจริง (เลือกหนึ่งวิธีต่อชั้นข้อมูล)
+       A) เปลี่ยน url เป็นที่อยู่ GeoJSON ที่เว็บเข้าถึงได้ (เช่น "data/points.geojson")
+       B) วาง FeatureCollection ทั้งชุดลงใน inlineData: { ... }
+  
+       ชื่อฟิลด์จุดที่ปรับได้ใน pointFields: name, category, confidence_score,
+       image, description. พิกัดใช้ geometry ของ GeoJSON เป็นหลัก; ถ้ามีเฉพาะ lat/lng
+       ระบบจะเปลี่ยนเป็น Point ให้โดยอัตโนมัติ.
+       Hot Spot รองรับฟิลด์ gi_bin, Gi_Bin, hotspot, z_score หรือ zscore.
+    ======================================================================= */
+    const CONFIG = {
+      center: [18.7883, 98.9853], zoom: 13,
+      pointFields: {name: "name", category: "category", confidence: "confidence_score", image: "image", description: "description", lat: "lat", lng: "lng"},
+      categoryColors: {"สถาปัตยกรรม": "#a63d2f", "ศาสนสถาน": "#d6a23a", "หัตถกรรม": "#23765f", "อาหาร": "#7f5a92", "ประเพณี": "#ba6b2b"},
+      points: {url: "", inlineData: null},
+      hotspots: {url: "", inlineData: null},
+      boundary: {url: "", inlineData: null},
+      showSampleDataWhenEmpty: true
+    };
+
+    // ข้อมูลตัวอย่าง: จะแสดงเฉพาะเมื่อยังไม่ได้ระบุ CONFIG.*.url หรือ inlineData
+    const SAMPLE = {
+      points: {
+        type: "FeatureCollection", features: [
+          {type: "Feature", properties: {name: "วัดเจดีย์หลวง", category: "ศาสนสถาน", confidence_score: .94, description: "ตัวอย่างข้อมูล — แทนที่ด้วยข้อมูลวิจัยจริง"}, geometry: {type: "Point", coordinates: [98.9801, 18.7872]}},
+          {type: "Feature", properties: {name: "ประตูท่าแพ", category: "สถาปัตยกรรม", confidence_score: .87, description: "ตัวอย่างข้อมูล — แทนที่ด้วยข้อมูลวิจัยจริง"}, geometry: {type: "Point", coordinates: [98.9934, 18.7878]}},
+          {type: "Feature", properties: {name: "ชุมชนวัดศรีสุพรรณ", category: "หัตถกรรม", confidence_score: .81, description: "ตัวอย่างข้อมูล — แทนที่ด้วยข้อมูลวิจัยจริง"}, geometry: {type: "Point", coordinates: [98.9818, 18.7765]}}
+        ]
+      },
+      boundary: {type: "FeatureCollection", features: [{type: "Feature", properties: {name: "ขอบเขตเมืองเก่า (ตัวอย่าง)"}, geometry: {type: "Polygon", coordinates: [[[98.972, 18.775], [99.003, 18.775], [99.003, 18.801], [98.972, 18.801], [98.972, 18.775]]]}}]},
+      hotspots: {
+        type: "FeatureCollection", features: [
+          {type: "Feature", properties: {gi_bin: "Hot Spot 99%"}, geometry: {type: "Polygon", coordinates: [[[98.976, 18.783], [98.986, 18.783], [98.986, 18.792], [98.976, 18.792], [98.976, 18.783]]]}},
+          {type: "Feature", properties: {gi_bin: "Cold Spot 95%"}, geometry: {type: "Polygon", coordinates: [[[98.990, 18.784], [99.000, 18.784], [99.000, 18.794], [98.990, 18.794], [98.990, 18.784]]]}}
+        ]
+      }
+    };
+
+    const map = L.map("map", {zoomControl: false}).setView(CONFIG.center, CONFIG.zoom);
+    L.control.zoom({position: "bottomright"}).addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom: 19, attribution: "© OpenStreetMap contributors"}).addTo(map);
+    const pointsGroup = L.layerGroup().addTo(map), hotspotsGroup = L.layerGroup().addTo(map), boundaryGroup = L.layerGroup().addTo(map);
+    let heatLayer = null, allPoints = [], selectedCategories = new Set();
+    const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"}[c]));
+    const valueOf = (p, key) => p.properties?.[CONFIG.pointFields[key]];
+    async function loadData(source, sample, label) {
+      if (source.inlineData) return source.inlineData;
+      if (source.url) {const response = await fetch(source.url); if (!response.ok) throw new Error(`${label}: ${response.status}`); return response.json();}
+      return CONFIG.showSampleDataWhenEmpty ? sample : {type: "FeatureCollection", features: []};
+    }
+    function normalizePoints(data) {
+      return (data.features || []).map(f => {
+        if (!f.geometry && Number.isFinite(+valueOf(f, "lat")) && Number.isFinite(+valueOf(f, "lng"))) return {...f, geometry: {type: "Point", coordinates: [+valueOf(f, "lng"), +valueOf(f, "lat")]}};
+        return f;
+      }).filter(f => f.geometry?.type === "Point");
+    }
+    function categoryColor(category) {return CONFIG.categoryColors[category] || "#795548";}
+    function popup(feature) {const p = feature.properties || {}, name = valueOf(feature, "name") || "ไม่ระบุชื่อ", score = Number(valueOf(feature, "confidence")); const image = valueOf(feature, "image"), desc = valueOf(feature, "description"); return `<div class="map-title">${esc(name)}</div>${image ? `<img class="popup-image" src="${esc(image)}" alt="ภาพ ${esc(name)}" onerror="this.remove()">` : ""}<table class="popup-table"><tr><td>ประเภท</td><td>${esc(valueOf(feature, "category") || "–")}</td></tr><tr><td>ความเชื่อมั่น</td><td>${Number.isFinite(score) ? score.toFixed(2) : "–"}</td></tr>${desc ? `<tr><td>รายละเอียด</td><td>${esc(desc)}</td></tr>` : ""}</table>`;}
+    function filteredPoints() {const min = +document.getElementById("confidenceSlider").value; return allPoints.filter(f => selectedCategories.has(String(valueOf(f, "category") || "ไม่ระบุประเภท")) && (Number(valueOf(f, "confidence")) || 0) >= min);}
+    function updatePoints() {const visible = filteredPoints(); pointsGroup.clearLayers(); visible.forEach(f => {const category = String(valueOf(f, "category") || "ไม่ระบุประเภท"); L.circleMarker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {radius: 7, color: "#fff", weight: 2, fillColor: categoryColor(category), fillOpacity: .92}).bindPopup(popup(f)).addTo(pointsGroup);}); if (heatLayer) map.removeLayer(heatLayer); heatLayer = L.heatLayer(visible.map(f => [f.geometry.coordinates[1], f.geometry.coordinates[0], Math.max(.05, Math.min(1, Number(valueOf(f, "confidence")) || 0))]), {radius: 28, blur: 20, maxZoom: 17, gradient: {.15: "#23765f", .5: "#d6a23a", .8: "#b9512d", 1: "#8e2b20"}}); if (document.getElementById("heatToggle").checked) heatLayer.addTo(map); document.getElementById("pointCount").textContent = visible.length;}
+    function makeFilters() {const categories = [...new Set(allPoints.map(f => String(valueOf(f, "category") || "ไม่ระบุประเภท")))].sort(); selectedCategories = new Set(categories); const filters = document.getElementById("categoryFilters"), legend = document.getElementById("legend"); filters.innerHTML = ""; legend.innerHTML = ""; categories.forEach((c, i) => {const id = `cat-${i}`; filters.insertAdjacentHTML("beforeend", `<label><input id="${id}" type="checkbox" checked data-category="${esc(c)}"><span class="swatch" style="background:${categoryColor(c)}"></span>${esc(c)}</label>`); legend.insertAdjacentHTML("beforeend", `<div class="legend-item"><span class="swatch" style="background:${categoryColor(c)}"></span><span>${esc(c)}</span></div>`);}); filters.addEventListener("change", e => {if (e.target.matches("[data-category]")) {const c = e.target.dataset.category; e.target.checked ? selectedCategories.add(c) : selectedCategories.delete(c); updatePoints();} });}
+    function hotspotStyle(feature) {const p = feature.properties || {}, raw = String(p.gi_bin ?? p.Gi_Bin ?? p.hotspot ?? "").toLowerCase(), z = Number(p.z_score ?? p.zscore); const isHot = raw.includes("hot") || z > 0, isCold = raw.includes("cold") || z < 0; return {color: isHot ? "#a72620" : isCold ? "#287ba6" : "#836e55", weight: 1.3, fillColor: isHot ? "#c43b31" : isCold ? "#4c9ac2" : "#b6a690", fillOpacity: .34};}
+    function addHotspots(data) {L.geoJSON(data, {style: hotspotStyle, onEachFeature: (f, l) => {const p = f.properties || {}; l.bindPopup(`<strong class="${String(p.gi_bin ?? p.Gi_Bin ?? "").toLowerCase().includes("cold") ? "cold" : "hot"}">${esc(p.gi_bin ?? p.Gi_Bin ?? p.hotspot ?? "ผล Hot Spot Analysis")}</strong>${p.z_score !== undefined ? `<br>z-score: ${esc(p.z_score)}` : ""}`)}}).addTo(hotspotsGroup);}
+    function addBoundary(data) {L.geoJSON(data, {style: {color: "#8e2b20", weight: 2, fillColor: "#d6a23a", fillOpacity: .08}, onEachFeature: (f, l) => l.bindPopup(esc(f.properties?.name || "ขอบเขตพื้นที่ศึกษา"))}).addTo(boundaryGroup);}
+    function setLayer(toggle, layer) {document.getElementById(toggle).addEventListener("change", e => e.target.checked ? layer.addTo(map) : map.removeLayer(layer));}
+    function wireControls() {setLayer("pointsToggle", pointsGroup); setLayer("hotspotToggle", hotspotsGroup); setLayer("boundaryToggle", boundaryGroup); document.getElementById("heatToggle").addEventListener("change", () => updatePoints()); document.getElementById("confidenceSlider").addEventListener("input", e => {document.getElementById("confidenceValue").textContent = (+e.target.value).toFixed(2); updatePoints();}); const toggle = document.getElementById("sidebarToggle"); toggle.addEventListener("click", () => {const open = document.body.classList.toggle("sidebar-open"); toggle.setAttribute("aria-expanded", open);});}
+    (async function init() {try {const [points, hotspots, boundary] = await Promise.all([loadData(CONFIG.points, SAMPLE.points, "จุดอัตลักษณ์"), loadData(CONFIG.hotspots, SAMPLE.hotspots, "Hot Spot"), loadData(CONFIG.boundary, SAMPLE.boundary, "ขอบเขต")]); allPoints = normalizePoints(points); makeFilters(); addHotspots(hotspots); addBoundary(boundary); wireControls(); updatePoints(); const usesSample = !CONFIG.points.url && !CONFIG.points.inlineData; document.getElementById("dataNotice").textContent = usesSample ? "กำลังแสดงข้อมูลตัวอย่าง 4 จุด: แก้ส่วน CONFIG เพื่อเชื่อม GeoJSON จริง." : "แสดงข้อมูลจาก CONFIG แล้ว"; const bounds = pointsGroup.getBounds(); if (bounds.isValid()) map.fitBounds(bounds.pad(.22));} catch (error) {document.getElementById("dataNotice").textContent = "โหลดข้อมูลไม่สำเร็จ: " + error.message; console.error(error); wireControls();} })();
+  </script>
+</body>
+
+</html>

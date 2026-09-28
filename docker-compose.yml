@@ -1,0 +1,9 @@
+services:
+  web:
+    build: .
+    container_name: lannamap
+    image: lanna-map:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public/data:/usr/share/nginx/html/data:ro

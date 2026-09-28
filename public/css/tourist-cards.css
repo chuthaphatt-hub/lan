@@ -1,0 +1,74 @@
+.identity-section>.eyebrow,.identity-section>h2{max-width:1280px;margin-left:auto;margin-right:auto}
+.identity-cards{display:flex;gap:24px;max-width:1280px;margin:0 auto;padding-bottom:10px;scroll-snap-type:x proximity}
+.identity-cards article{display:flex;flex-direction:column;flex:1 1 0;min-width:0;scroll-snap-align:start}
+.identity-cards article div{order:1}.identity-cards img{order:2;height:220px;min-height:220px;object-fit:cover}
+@media (max-width:760px){.identity-cards{gap:14px;margin-right:-7vw;padding-right:7vw}.identity-cards article{flex:0 0 82vw;min-width:82vw}.identity-cards img{height:190px;min-height:190px}}
+
+.screen-reader-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+#aboutButton{border:0!important;background:transparent!important;padding:0!important;color:inherit!important;letter-spacing:inherit!important}
+.identity-cards article:nth-child(1) img{content:url("../images/run3_point_4101_right.jpg")}
+.identity-cards article:nth-child(2) img{content:url("../images/run4_point_2378_left.jpg")}
+.identity-cards article:nth-child(3) img{content:url("../images/run1_point_934_left.jpg")}
+
+/* Give the three-identity feature its own full viewport. */
+.identity-section{min-height:100svh;display:flex;flex-direction:column;justify-content:center}
+.identity-section .identity-cards{flex:0 0 auto}
+.identity-cards article img{width:100%;height:clamp(260px,30vw,340px);min-height:0;object-fit:contain;object-position:center;background:transparent}
+.identity-cards article{opacity:0;transform:translateY(110px);transition:opacity 1.1s ease,transform 1.1s cubic-bezier(.2,.75,.25,1)}
+.identity-cards article.is-visible{opacity:1;transform:translateY(0)}
+
+/* Map choices remain within the original cream-and-Lanna landing-page palette. */
+.map-menu-section{padding-bottom:110px}
+.map-menu-section .section-heading{max-width:1280px;margin:0 auto;padding-left:0;padding-right:0}
+.map-menu-section .section-heading h2 em{color:var(--jade);font-weight:400}
+.home-map-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1280px;margin:0 auto}
+.home-map-choices a{position:relative;display:block;min-height:250px;padding:27px 28px;background:#fff;color:var(--ink);border:1px solid #d7c9b7;text-decoration:none;transition:transform .2s,border-color .2s,box-shadow .2s}
+.home-map-choices a:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 10px 25px #6b4d2417}
+.home-map-choices span{color:var(--red);font:700 .68rem Arial,sans-serif;letter-spacing:.14em}
+.home-map-choices h3{margin:28px 0 10px;font-size:1.65rem;font-weight:400}
+.home-map-choices p{max-width:285px;margin:0;color:#675f56;line-height:1.65}
+.home-map-choices b{position:absolute;right:25px;bottom:22px;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--jade);border-radius:50%;color:var(--jade);font:400 1.15rem Arial}
+@media(max-width:760px){.map-menu-section .section-heading{padding-left:0;padding-right:0}.home-map-choices{grid-template-columns:1fr}.home-map-choices a{min-height:205px}}
+#drawerScrim{position:fixed;z-index:19;inset:0;background:#17120b77;opacity:0;pointer-events:none;transition:opacity .25s}
+#aboutDrawer{position:fixed;z-index:20;top:0;right:0;width:min(25vw,430px);min-width:330px;height:100dvh;padding:54px 30px 30px;background:#fbf6ed;color:var(--ink);box-shadow:-8px 0 25px #0004;overflow:auto;transform:translateX(105%);transition:transform .28s ease}
+#aboutDrawer h2{margin:0 0 18px;font-size:1.8rem;line-height:1.25;font-weight:400}
+#aboutDrawer p{margin:0 0 22px}#aboutDrawer dl{margin:0;border-top:1px solid var(--line)}#aboutDrawer dl div{padding:13px 0;border-bottom:1px solid var(--line)}#aboutDrawer dt{color:var(--jade);font:700 .72rem Arial,sans-serif;letter-spacing:.08em}#aboutDrawer dd{margin:3px 0 0}.drawer-note{padding:12px;border-left:3px solid var(--gold);background:#f2e5cb;font-size:.83rem}
+#aboutClose{position:absolute;top:15px;right:18px;border:0;background:none;color:var(--red);font-size:2rem;line-height:1;cursor:pointer}
+body.about-open #aboutDrawer{transform:translateX(0)}body.about-open #drawerScrim{opacity:1;pointer-events:auto}
+@media(max-width:760px){#aboutDrawer{width:min(88vw,390px);min-width:0}}
+
+/* Cinematic map-style landing panel. */
+body:has(.hero-frame){background:#69787d}
+.hero{height:100svh;min-height:660px;padding:9vh 3.5vw 7vh;background:#69787d}
+.hero-frame{position:relative;isolation:isolate;width:100%;height:100%;overflow:hidden;background:#1a211e;box-shadow:0 26px 45px #2430358c}
+.hero-frame::before{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;background:linear-gradient(#ffffff20 1px,transparent 1px),linear-gradient(90deg,#ffffff20 1px,transparent 1px);background-size:12.5% 100%,100% 16.666%}
+.hero-frame>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.68) contrast(.88) brightness(.72);transform:scale(1.03)}
+.hero-frame .hero-shade{z-index:1;background:linear-gradient(90deg,#07140ed9 0%,#07140e85 43%,#07140e28 76%,#07140ea6 100%)}
+.site-header{position:absolute;z-index:12;top:9vh;left:3.5vw;right:3.5vw;padding:20px 34px;border-bottom:1px solid #ffffff33}
+.site-header nav{gap:30px}.site-header nav a,.site-header nav button{font-size:.68rem}.site-header .brand{font-size:.8rem}
+.hero-copy{z-index:4;left:52%;right:9%;bottom:20%;max-width:470px}.hero-copy .eyebrow{color:#e8c16f}.hero-place{margin:0 0 12px;color:#ffffffc7;font:italic 1.15rem Georgia,serif;letter-spacing:.16em}.hero-copy h1{font-size:clamp(4rem,7.4vw,7.5rem);line-height:.82;letter-spacing:-.055em}.hero-copy p:not(.eyebrow):not(.hero-place){max-width:360px;margin-top:24px;color:#f6eee4d9}.scroll-link{margin-top:22px;border:1px solid #ffffff99;padding:10px 15px;border-bottom:0}.scroll-link span{margin-left:16px}
+.hero-route{position:absolute;z-index:3;left:18%;top:18%;width:23%;height:66%;overflow:visible;color:#fff;font:700 11px Arial,sans-serif;letter-spacing:.05em}.hero-route path{fill:none;stroke:#fff;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;opacity:.85}.hero-route circle{fill:#237b70;stroke:#fff;stroke-width:3}.hero-route circle:last-of-type{fill:#d49725;stroke-width:4}.hero-route text{fill:#fff;paint-order:stroke;stroke:#112019;stroke-width:3px;stroke-linejoin:round}
+.hero-footer{position:absolute;z-index:4;right:32px;bottom:21px;left:32px;display:flex;justify-content:space-between;align-items:center;color:#fff;font:700 .61rem Arial,sans-serif;letter-spacing:.13em}.hero-footer span:nth-child(2){color:#f2c25b}
+@media(max-width:760px){.hero{min-height:690px;padding:0;background:#192722}.hero-frame{box-shadow:none}.site-header{top:0;left:0;right:0;padding:18px 6vw}.site-header nav{gap:16px}.hero-route{left:6%;top:23%;width:40%;height:48%}.hero-copy{left:8vw;right:8vw;bottom:15%;max-width:none}.hero-copy h1{font-size:4rem}.hero-footer{left:7vw;right:7vw;bottom:20px}.hero-footer span:first-child{display:none}}
+
+/* Full-bleed version of the landing composition. */
+.hero{height:100svh;padding:0;background:#1a211e}
+.hero-frame{box-shadow:none}
+.site-header{top:0;left:0;right:0}
+
+/* Restore the original full-image landing page. */
+body{background:var(--cream)}
+.hero{height:100svh;min-height:0;padding:0;background:transparent}
+.site-header{top:0;left:0;right:0;padding:22px 5vw;border-bottom:0}
+.site-header nav{gap:18px}.site-header nav a,.site-header nav button{font-size:inherit}.site-header .brand{font-size:inherit}
+.hero-copy{left:8vw;right:auto;bottom:11vh;max-width:640px}.hero-copy .eyebrow{color:#ffcf60}.hero-place,.hero-route,.hero-footer{display:none}.hero-copy h1{font-size:clamp(3.2rem,7vw,6.5rem);line-height:.99;letter-spacing:normal}.hero-copy p:not(.eyebrow):not(.hero-place){max-width:470px;margin-top:1em;color:inherit}.scroll-link{margin-top:20px;border:0;border-bottom:1px solid #ffd46c;padding:0 0 4px}.scroll-link span{margin-left:0}
+@media(max-width:760px){.hero{min-height:0;padding:0;background:transparent}.site-header{padding:16px 5vw}.hero-copy{left:7vw;right:7vw;bottom:8vh;max-width:none}.hero-copy h1{font-size:clamp(3.2rem,7vw,6.5rem)}}
+
+/* Keep the Thai hero title readable without overwhelming the photograph. */
+.hero-copy{max-width:min(760px,55vw)}
+.hero-copy h1{font-size:clamp(2.7rem,4.2vw,4.8rem);line-height:1.06}
+@media(max-width:760px){.hero-copy{max-width:none}.hero-copy h1{font-size:clamp(2.7rem,9vw,4rem);line-height:1.08}}
+
+/* Keep section titles proportional to their content cards on wide screens. */
+.identity-section>h2,.map-menu-section .section-heading h2{font-size:clamp(2.25rem,3vw,3.5rem);line-height:1.14}
+@media(max-width:760px){.identity-section>h2,.map-menu-section .section-heading h2{font-size:clamp(2rem,8vw,2.8rem);line-height:1.18}}
